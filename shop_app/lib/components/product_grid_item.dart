@@ -4,14 +4,11 @@ import 'package:shop_app/models/cart.dart';
 import 'package:shop_app/models/product.dart';
 import 'package:shop_app/utils/app_routes.dart';
 
-class ProductItem extends StatelessWidget {
-  const ProductItem({Key? key}) : super(key: key);
+class ProductGridItem extends StatelessWidget {
+  const ProductGridItem({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    /* Como sabemos que somente o botão de favorito ira atualizar podemos SETAR  o LISTEN p/ FALSE,
-    e controlar o acesso usando o CONSUMER. Reduz de maneira pequena o impacto, mas não é totalmente necessário, pode ser feito direto
-    Para isto basta tirar o listen e fazer normalmente sem o consumer. */
     final product = Provider.of<Product>(context, listen: false);
     final cart = Provider.of<Cart>(context, listen: false);
 
@@ -57,6 +54,18 @@ class ProductItem extends StatelessWidget {
             ),
             onPressed: () {
               cart.addItem(product);
+              ScaffoldMessenger.of(context).hideCurrentSnackBar();
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: const Text('Produto adicionado com sucesso.'),
+                  duration: const Duration(seconds: 2),
+                  action: SnackBarAction(
+                      label: 'DESFAZER',
+                      onPressed: () {
+                        cart.removerOneItem(product.id);
+                      }),
+                ),
+              );
             },
           ),
         ),
