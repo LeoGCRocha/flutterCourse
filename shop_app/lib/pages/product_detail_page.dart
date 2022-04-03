@@ -15,7 +15,7 @@ class ProductDetailPage extends StatelessWidget {
       body: SingleChildScrollView(
         child: Column(
           children: [
-            Container(
+            SizedBox(
               child: Image.network(
                 product.imageUrl,
                 fit: BoxFit.cover,

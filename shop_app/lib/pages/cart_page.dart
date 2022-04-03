@@ -5,6 +5,8 @@ import 'package:shop_app/models/cart.dart';
 import 'package:shop_app/models/order_list.dart';
 
 class CartPage extends StatelessWidget {
+  const CartPage({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     final Cart cart = Provider.of(context);

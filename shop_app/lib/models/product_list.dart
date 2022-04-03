@@ -13,4 +13,13 @@ class ProductList with ChangeNotifier {
     _items.add(product);
     notifyListeners();
   }
+
+  void removeProduct(String id) {
+    _items.removeWhere((product) => product.id == id);
+    notifyListeners();
+  }
+
+  int get itemsCount {
+    return _items.length;
+  }
 }
