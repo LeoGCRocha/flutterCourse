@@ -29,6 +29,25 @@ class _ProductFormPageState extends State<ProductFormPage> {
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    if (_formData.isEmpty) {
+      final args = ModalRoute.of(context)!.settings.arguments;
+      if (args != null) {
+        final product = args as Product;
+        _formData['id'] = product.id;
+        _formData['name'] = product.name;
+        _formData['price'] = product.price;
+        _formData['description'] = product.description;
+        _formData['imgUrl'] = product.imageUrl;
+
+        _imageUrlController.text = product.imageUrl;
+      }
+    }
+  }
+
+  @override
   void dispose() {
     super.dispose();
     _priceFocus.dispose();
@@ -44,6 +63,8 @@ class _ProductFormPageState extends State<ProductFormPage> {
 
   void _submitForm() {
     bool isValid = _formKey.currentState!.validate();
+    bool hasId = _formData['id'] != null;
+
     if (isValid) {
       _formKey.currentState!.save();
       String _imgUrl = _formData['imgUrl'] as String;
@@ -52,13 +73,29 @@ class _ProductFormPageState extends State<ProductFormPage> {
             'https://lh3.googleusercontent.com/EbXw8rOdYxOGdXEFjgNP8lh-YAuUxwhOAe2jhrz3sgqvPeMac6a6tHvT35V6YMbyNvkZL4R_a2hcYBrtfUhLvhf-N2X3OB9cvH4uMw=w1064-v0';
       }
       Product p = Product(
-          id: Random().nextDouble().toString(),
+          id: hasId
+              ? _formData['id'] as String
+              : Random().nextDouble().toString(),
           name: _formData['name'] as String,
           description: _formData['description'] as String,
           price: _formData['price'] as double,
           imageUrl: _imgUrl);
-      Provider.of<ProductList>(context, listen: false).addProduct(p);
+      if (hasId) {
+        // update
+        updateProduct(p);
+      } else {
+        Provider.of<ProductList>(context, listen: false).addProduct(p);
+      }
       Navigator.of(context).pop();
+    }
+  }
+
+  void updateProduct(Product p) {
+    List<Product> _items =
+        Provider.of<ProductList>(context, listen: false).items;
+    int index = _items.indexWhere((productRef) => (p.id == productRef.id));
+    if (index >= 0) {
+      Provider.of<ProductList>(context, listen: false).saveProduct(p, index);
     }
   }
 
@@ -78,6 +115,7 @@ class _ProductFormPageState extends State<ProductFormPage> {
           child: ListView(
             children: [
               TextFormField(
+                initialValue: _formData['name'] as String,
                 decoration: const InputDecoration(labelText: 'Nome'),
                 textInputAction: TextInputAction.next,
                 validator: (_name) {
@@ -93,6 +131,7 @@ class _ProductFormPageState extends State<ProductFormPage> {
                 onSaved: (name) => _formData['name'] = name ?? '',
               ),
               TextFormField(
+                initialValue: _formData['price'].toString(),
                 decoration: const InputDecoration(labelText: 'Preço'),
                 textInputAction: TextInputAction.next,
                 focusNode: _priceFocus,
@@ -113,6 +152,7 @@ class _ProductFormPageState extends State<ProductFormPage> {
                     double.parse((price! == '') ? '0.0' : price),
               ),
               TextFormField(
+                initialValue: _formData['description'] as String,
                 decoration: const InputDecoration(labelText: 'Descrição'),
                 textInputAction: TextInputAction.next,
                 focusNode: _descriptionFocus,

@@ -19,6 +19,11 @@ class ProductList with ChangeNotifier {
     notifyListeners();
   }
 
+  void saveProduct(Product p, int index) {
+    _items[index] = p;
+    notifyListeners();
+  }
+
   int get itemsCount {
     return _items.length;
   }
