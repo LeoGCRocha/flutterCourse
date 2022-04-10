@@ -30,7 +30,7 @@ class ProductItem extends StatelessWidget {
             IconButton(
               onPressed: () {
                 Provider.of<ProductList>(context, listen: false)
-                    .removeProduct(product.id);
+                    .removeProduct(product);
               },
               icon: const Icon(Icons.delete),
               color: Colors.redAccent,

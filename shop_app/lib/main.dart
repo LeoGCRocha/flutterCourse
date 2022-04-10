@@ -39,11 +39,11 @@ class MyApp extends StatelessWidget {
           primarySwatch: Colors.purple,
           fontFamily: 'Lato',
         ),
-        home: const ProductOverviewPage(),
+        home: ProductsOverviewPage(),
         routes: {
           AppRoutes.PRODUCT_DETAIL: (ctx) => const ProductDetailPage(),
           AppRoutes.CART_PAGE: (ctx) => const CartPage(),
-          AppRoutes.HOME: (ctx) => const ProductOverviewPage(),
+          AppRoutes.HOME: (ctx) => ProductsOverviewPage(),
           AppRoutes.ORDERS: (ctx) => OrdersPage(),
           AppRoutes.PRODUCTS: (ctx) => const ProductsPage(),
           AppRoutes.PRODUCT_FORM_PAGE: (ctx) => const ProductFormPage(),
