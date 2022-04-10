@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:shop_app/models/cart.dart';
+import 'package:shop_app/models/cart_item.dart';
 import 'package:shop_app/models/order.dart';
 import 'package:http/http.dart' as http;
 
@@ -17,6 +18,34 @@ class OrderList with ChangeNotifier {
   }
 
   final _baseUrl = 'https://shop-6ecbd-default-rtdb.firebaseio.com/orders';
+
+  Future<void> loadOrders() async {
+    _items.clear();
+
+    final response = await http.get(
+      Uri.parse('$_baseUrl.json'),
+    );
+    if (response.body == 'null') return;
+    Map<String, dynamic> data = jsonDecode(response.body);
+
+    data.forEach((orderId, orderData) {
+      _items.add(Order(
+          id: orderId,
+          total: orderData['total'],
+          products: (orderData['product'] as List<dynamic>)
+              .map(
+                (item) => CartItem(
+                    id: item['id'],
+                    productId: item['productId'],
+                    name: item['name'],
+                    quantity: item['quantity'],
+                    price: item['price']),
+              )
+              .toList(),
+          date: DateTime.parse(orderData['date'])));
+    });
+    notifyListeners();
+  }
 
   Future<void> addOrder(Cart cart) async {
     final date = DateTime.now();
